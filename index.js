@@ -35,7 +35,7 @@ app.get('/api/persons', (request, response) => {
 
 app.get('/api/persons/:id', (request, response) => {
   const id = request.params.id
-  const person = persons.find(p => p.id == id)
+  const person = persons.find(p => p.id === id)
   if (person){
     response.json(person)
   } else {
@@ -50,11 +50,14 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 app.post('/api/persons', (request, response) => {
-  let person = request.body
-  if (person.name && person.number) {
-    person = {...person, id: generateId()}
-    persons = persons.concat(person)
-    response.json(person)
+  let reqPerson = request.body
+  if (reqPerson.name && reqPerson.number) {
+    if (persons.find(p => reqPerson.name === p.name)) {
+      response.status(409).json({error: `The name ${reqPerson.name} already exists`})
+    }
+    reqPerson = {...reqPerson, id: generateId()}
+    persons = persons.concat(reqPerson)
+    response.json(reqPerson)
   } else {
     response.status(400).end()
   }
