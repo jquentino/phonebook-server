@@ -29,6 +29,30 @@ app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
 
+app.get('/info', (request, response) => {
+  const nPersons = persons.length
+  const DateOptions = {
+    datastyle: 'full',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZoneName: 'longOffset'
+  };
+
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  const dateString = new Date().toLocaleString('en-US', DateOptions)
+  response.send(
+    `Phonebook has info of ${nPersons} people
+    </br>
+    ${dateString} (${timezone})`
+  )
+})
+
+
 PORT = 3001
 app.listen(PORT, () => {
   console.log('Server Started')
