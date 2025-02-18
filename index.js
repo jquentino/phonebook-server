@@ -25,6 +25,10 @@ let persons = [
   }
 ]
 
+const generateId = () => {
+  return Math.random().toString(36).substring(2, 7)
+}
+
 app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
@@ -43,6 +47,17 @@ app.delete('/api/persons/:id', (request, response) => {
   const id = request.params.id
   persons = persons.filter(p => p.id !== id)
   response.status(204).end()
+})
+
+app.post('/api/persons', (request, response) => {
+  let person = request.body
+  if (person.name && person.number) {
+    person = {...person, id: generateId()}
+    persons = persons.concat(person)
+    response.json(person)
+  } else {
+    response.status(400).end()
+  }
 })
 
 app.get('/info', (request, response) => {
