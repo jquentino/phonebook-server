@@ -1,6 +1,5 @@
 const express = require('express')
 const morgan = require('morgan')
-
 const app = express()
 
 app.use(express.json())
@@ -98,7 +97,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-PORT = 3001
+PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log('Server Started')
 })

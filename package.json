@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: No tests implemented\"",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "deploy": "fly deploy"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.7.8",
     "nodemon": "^3.1.9"
   }
 }
