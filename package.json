@@ -6,7 +6,9 @@
     "test": "echo \"Error: No tests implemented\"",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "deploy": "fly deploy"
+    "deploy": "fly deploy",
+    "build:ui": "rm -rf dist && cd ../fullstack-course/part2/phonebook/ && npm run build && cp -r dist ../../../phonebook-server/.",
+    "deploy:full": "npm run build:ui && npm run deploy"
   },
   "repository": {
     "type": "git",
