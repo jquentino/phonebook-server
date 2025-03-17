@@ -32,9 +32,10 @@ main = () => {
 }
 
 showAllContacts = () => {
+  console.log(`phonebook: `)
   Contact.find({}).then(result => {
     result.forEach(contact => {
-      console.log(contact)
+      console.log(`${contact.name} ${contact.number}`)
     })
     mongoose.connection.close()
   })
