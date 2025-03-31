@@ -1,9 +1,7 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
 
-const mongo_user = process.env.MONGO_USER
-const mongo_pwd = process.env.MONGO_PWD 
-
+const MONGO_URI = process.env.MONGO_URI
 const contactSchema = new mongoose.Schema({
   name: String,
   number: String,
@@ -12,14 +10,13 @@ const contactSchema = new mongoose.Schema({
 const Contact = mongoose.model('Contact', contactSchema)
 
 main = () => {
-  const url = `mongodb+srv://${mongo_user}:${mongo_pwd}@cluster0.lqmx1.mongodb.net/PhonebookApp?retryWrites=true&w=majority&appName=Cluster0`
   mongoose.set('strictQuery', false)
-  mongoose.connect(url)
-  
-  if (process.argv.length == 4){
+  mongoose.connect(MONGO_URI)
+
+  if (process.argv.length == 4) {
     const name = process.argv[2]
     const number = process.argv[3]
-    addNewContact(name, number) 
+    addNewContact(name, number)
   } else if (process.argv.length == 2) {
     showAllContacts()
   } else {
