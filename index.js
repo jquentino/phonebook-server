@@ -10,40 +10,44 @@ morgan.token('body', (req, res) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 
-const generateId = () => {
-  return Math.random().toString(36).substring(2, 7)
-}
-
-app.get('/api/persons', (request, response) => {
+app.get('/api/persons', (request, response, next) => {
   Contact.find({}).then(contacts => {
     response.json(contacts)
-  })
-})
-
-app.get('/api/persons/:id', (request, response) => {
-  Contact.findById(request.params.id).then(contact => {
-    response.json(contact)
-  })
-})
-
-app.delete('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  Contact.findByIdAndDelete(id).then(
-    result => response.status(204).end()
+  }).catch(
+    error => next(error)
   )
 })
 
-app.post('/api/persons', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
+  Contact.findById(request.params.id).then(contact => {
+    response.json(contact)
+  }).catch(
+    error => next(error)
+  )
+})
+
+app.delete('/api/persons/:id', (request, response, next) => {
+  const id = request.params.id
+  Contact.findByIdAndDelete(id).then(
+    result => response.status(204).end()
+  ).catch(
+    error => next(error)
+  )
+})
+
+app.post('/api/persons', (request, response, next) => {
   const reqPerson = request.body
   Contact.insertOne({
     name: reqPerson.name,
     number: reqPerson.number
   }).then(
     insertedData => response.json(insertedData)
+  ).catch(
+    error => next(error)
   )
 })
 
-app.get('/info', (request, response) => {
+app.get('/info', (request, response, next) => {
   // nPersons = Contact.where(;{}).countDocuments()
   const DateOptions = {
     datastyle: 'full',
@@ -62,7 +66,6 @@ app.get('/info', (request, response) => {
 
   Contact.countDocuments({}, { hint: "_id_" }).exec().then(
     (countResult) => {
-      console.log('countResult', countResult)
       response.send(
         `Phonebook has info of ${countResult} people
         </br>
@@ -70,17 +73,28 @@ app.get('/info', (request, response) => {
       )
     }
   ).catch(
-    (error) => {
-      response.status(500).send(`Was not possible to get Phonebook info. Error ${error}`)
-    }
+    error => next(error)
   )
 })
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
-
 app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+  if (error.name === 'ValidationError') {
+    return response.status(400).send({ error: 'missing parameters on the request' })
+  }
+  next(error)
+}
+app.use(errorHandler)
+
 
 PORT = process.env.PORT || 3001
 app.listen(PORT, () => {

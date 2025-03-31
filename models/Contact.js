@@ -1,5 +1,6 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
+mongoose.set('strictQuery', false)
 
 const MONGO_URI = process.env.MONGO_URI
 
@@ -13,8 +14,14 @@ mongoose.connect(MONGO_URI)
   })
 
 const contactSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    required: true
+  },
+  number: {
+    type: String,
+    required: true
+  }
 })
 
 contactSchema.set('toJSON', {
