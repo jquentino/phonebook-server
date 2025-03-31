@@ -33,17 +33,23 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 app.post('/api/persons', (request, response) => {
-  let reqPerson = request.body
-  if (reqPerson.name && reqPerson.number) {
-    if (persons.find(p => reqPerson.name === p.name)) {
-      response.status(409).json({ error: `The name ${reqPerson.name} already exists` })
-    }
-    reqPerson = { ...reqPerson, id: generateId() }
-    persons = persons.concat(reqPerson)
-    response.json(reqPerson)
-  } else {
-    response.status(400).end()
-  }
+  const reqPerson = request.body
+  Contact.insertOne({
+    name: reqPerson.name,
+    number: reqPerson.number
+  }).then(
+    insertedData => response.json(insertedData)
+  )
+  // if (reqPerson.name && reqPerson.number) {
+  //   if (persons.find(p => reqPerson.name === p.name)) {
+  //     response.status(409).json({ error: `The name ${reqPerson.name} already exists` })
+  //   }
+  //   reqPerson = { ...reqPerson, id: generateId() }
+  //   persons = persons.concat(reqPerson)
+  //   response.json(reqPerson)
+  // } else {
+  //   response.status(400).end()
+  // }
 })
 
 app.get('/info', (request, response) => {
