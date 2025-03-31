@@ -28,8 +28,9 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
   const id = request.params.id
-  persons = persons.filter(p => p.id !== id)
-  response.status(204).end()
+  Contact.findByIdAndDelete(id).then(
+    result => response.status(204).end()
+  )
 })
 
 app.post('/api/persons', (request, response) => {
@@ -40,16 +41,6 @@ app.post('/api/persons', (request, response) => {
   }).then(
     insertedData => response.json(insertedData)
   )
-  // if (reqPerson.name && reqPerson.number) {
-  //   if (persons.find(p => reqPerson.name === p.name)) {
-  //     response.status(409).json({ error: `The name ${reqPerson.name} already exists` })
-  //   }
-  //   reqPerson = { ...reqPerson, id: generateId() }
-  //   persons = persons.concat(reqPerson)
-  //   response.json(reqPerson)
-  // } else {
-  //   response.status(400).end()
-  // }
 })
 
 app.get('/info', (request, response) => {
