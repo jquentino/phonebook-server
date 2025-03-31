@@ -35,6 +35,25 @@ app.delete('/api/persons/:id', (request, response, next) => {
   )
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+  const id = request.params.id
+  const contactToUpdate = request.body
+  Contact.findById(id)
+    .then((contact) => {
+      if (!contact) {
+        return response.status(404).end()
+      }
+      contact.name = contactToUpdate.name
+      contact.number = contactToUpdate.number
+
+      contact.save().then(
+        updatedContact => response.json(updatedContact)
+      )
+    }).catch(
+      error => next(error)
+    )
+})
+
 app.post('/api/persons', (request, response, next) => {
   const reqPerson = request.body
   Contact.insertOne({
@@ -47,7 +66,7 @@ app.post('/api/persons', (request, response, next) => {
   )
 })
 
-app.get('/info', (request, response, next) => {
+app.get('/info', (request, response) => {
   // nPersons = Contact.where(;{}).countDocuments()
   const DateOptions = {
     datastyle: 'full',
@@ -72,8 +91,6 @@ app.get('/info', (request, response, next) => {
         ${dateString} (${timezone})`
       )
     }
-  ).catch(
-    error => next(error)
   )
 })
 
@@ -89,7 +106,7 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).send({ error: 'malformatted id' })
   }
   if (error.name === 'ValidationError') {
-    return response.status(400).send({ error: 'missing parameters on the request' })
+    return response.status(400).send({ error: 'missing or wrong parameters on the request' })
   }
   next(error)
 }
