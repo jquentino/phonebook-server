@@ -5,12 +5,12 @@ const Contact = require('./models/Contact')
 const app = express()
 
 app.use(express.json())
-app.use(express.static("dist"))
-morgan.token('body', (req, res) => JSON.stringify(req.body))
+app.use(express.static('dist'))
+morgan.token('body', (req) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 
-app.get('/api/persons', (request, response, next) => {
+app.get('/api/persons', (_request, response, next) => {
   Contact.find({}).then(contacts => {
     response.json(contacts)
   }).catch(
@@ -29,7 +29,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 app.delete('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
   Contact.findByIdAndDelete(id).then(
-    result => response.status(204).end()
+    () => response.status(204).end()
   ).catch(
     error => next(error)
   )
@@ -68,7 +68,7 @@ app.post('/api/persons', (request, response, next) => {
   )
 })
 
-app.get('/info', (request, response) => {
+app.get('/info', (_request, response) => {
   // nPersons = Contact.where(;{}).countDocuments()
   const DateOptions = {
     datastyle: 'full',
@@ -79,13 +79,13 @@ app.get('/info', (request, response) => {
     minute: '2-digit',
     second: '2-digit',
     timeZoneName: 'longOffset'
-  };
+  }
 
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   const dateString = new Date().toLocaleString('en-US', DateOptions)
 
-  Contact.countDocuments({}, { hint: "_id_" }).exec().then(
+  Contact.countDocuments({}, { hint: '_id_' }).exec().then(
     (countResult) => {
       response.send(
         `Phonebook has info of ${countResult} people
@@ -96,12 +96,12 @@ app.get('/info', (request, response) => {
   )
 })
 
-const unknownEndpoint = (request, response) => {
+const unknownEndpoint = (_request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 app.use(unknownEndpoint)
 
-const errorHandler = (error, request, response, next) => {
+const errorHandler = (error, _request, response, next) => {
   console.error(error.message)
 
   if (error.name === 'CastError') {
@@ -114,7 +114,7 @@ const errorHandler = (error, request, response, next) => {
 }
 app.use(errorHandler)
 
-PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log('Server Started')
 })

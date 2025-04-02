@@ -9,18 +9,18 @@ const contactSchema = new mongoose.Schema({
 
 const Contact = mongoose.model('Contact', contactSchema)
 
-main = () => {
+const main = () => {
   mongoose.set('strictQuery', false)
   mongoose.connect(MONGO_URI)
 
-  if (process.argv.length == 4) {
+  if (process.argv.length === 4) {
     const name = process.argv[2]
     const number = process.argv[3]
     addNewContact(name, number)
-  } else if (process.argv.length == 2) {
+  } else if (process.argv.length === 2) {
     showAllContacts()
   } else {
-    console.log("Insert a valid number of arguments")
+    console.log('Insert a valid number of arguments')
     mongoose.connection.close()
     process.exit(1)
   }
@@ -28,8 +28,8 @@ main = () => {
 
 }
 
-showAllContacts = () => {
-  console.log(`phonebook: `)
+const showAllContacts = () => {
+  console.log('phonebook: ')
   Contact.find({}).then(result => {
     result.forEach(contact => {
       console.log(`${contact.name} ${contact.number}`)
@@ -38,7 +38,7 @@ showAllContacts = () => {
   })
 }
 
-addNewContact = (name, number) => {
+const addNewContact = (name, number) => {
   const newContact = new Contact({
     name,
     number

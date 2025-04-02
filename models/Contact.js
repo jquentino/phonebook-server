@@ -4,13 +4,13 @@ mongoose.set('strictQuery', false)
 
 const MONGO_URI = process.env.MONGO_URI
 
-console.log("Connecting to MongoDB...")
+console.log('Connecting to MongoDB...')
 mongoose.connect(MONGO_URI)
   .then(() => {
-    console.log("Connected to MongoDB")
+    console.log('Connected to MongoDB')
   })
   .catch((error) => {
-    console.error("Error connecting to MongoDB:", error.message)
+    console.error('Error connecting to MongoDB:', error.message)
   })
 
 const contactSchema = new mongoose.Schema({
@@ -23,7 +23,7 @@ const contactSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator: (v) => {
-        return /^\d+-\d+$/.test(v);
+        return /^\d+-\d+$/.test(v)
       },
       message: props => `${props.value} is not a valid phone number!`
     },
