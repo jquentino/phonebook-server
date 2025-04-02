@@ -46,8 +46,10 @@ app.put('/api/persons/:id', (request, response, next) => {
       contact.name = contactToUpdate.name
       contact.number = contactToUpdate.number
 
-      contact.save().then(
+      contact.save({ runValidators: true }).then(
         updatedContact => response.json(updatedContact)
+      ).catch(
+        (error) => next(error)
       )
     }).catch(
       error => next(error)
@@ -111,7 +113,6 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 app.use(errorHandler)
-
 
 PORT = process.env.PORT || 3001
 app.listen(PORT, () => {

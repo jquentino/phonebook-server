@@ -16,12 +16,18 @@ mongoose.connect(MONGO_URI)
 const contactSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: [true, 'Contact name required'],
     minLength: 3
   },
   number: {
     type: String,
-    required: true
+    validate: {
+      validator: (v) => {
+        return /^\d+-\d+$/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    },
+    required: [true, 'Contact phone number required']
   }
 })
 
